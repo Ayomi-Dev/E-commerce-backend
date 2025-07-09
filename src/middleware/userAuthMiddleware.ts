@@ -1,0 +1,36 @@
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET as string; // Fetching the JWT secret from environment variables
+
+interface UserAuthRequest extends Request {
+    user?:any 
+}
+        
+// Middleware to authenticate user requests
+export const protect = (req: UserAuthRequest, res:Response, next: NextFunction) => {
+    let token;
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) { // Checks if the Authorization header is present and starts with 'Bearer' 
+        token = req.headers.authorization.split(' ')[1]; // Extracts the token from the Authorization header
+        console.log("🔑 Token found:", token); // Logs the token for debugging purposes
+        if (!JWT_SECRET) {
+            console.error("❌ JWT_SECRET is missing!");
+            return (res as any).status(500).json({ message: "Server config error" });
+        }
+        
+    }
+    if(!token){
+        return (res as any).status(401).json({message: 'Unauthorized, no valid token'})
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET) as { id: string }; // Verifies the token using the JWT secret
+        req.user = decoded.id; // Attaches the decoded user information to the request object
+        next(); // Calls the next middleware or route handler 
+
+    } 
+    catch (error) {
+    console.error("❌ Token verification failed:", error);
+    return (res as any).status(401).json({ message: "Unauthorized, invalid token" });
+    }
+}
