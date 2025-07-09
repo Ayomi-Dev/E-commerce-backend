@@ -1,10 +1,12 @@
 import {Request, Response} from 'express';
 import Product from '../models/ProductModel';
+import { productQuery } from '../utils/productQuery';  // Importing utility function for querying products
 
 // Controller for handling product-related operations
 export const getProducts = async(req: Request, res: Response) => {  // Retrieves all products
     try {
-        const products = await Product.find();  // Fetch all products from the database
+        const filters = productQuery(req.query);  // Get the query object from the utility function
+        const products = await Product.find(filters);  // Fetch products from the database using the query
         if (!products || products.length === 0) {
             return (res as any).status(404).json({ message: 'No products found' });
         }
