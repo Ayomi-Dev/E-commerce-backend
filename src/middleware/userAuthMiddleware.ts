@@ -12,7 +12,7 @@ export const protect = (req: UserAuthRequest, res:Response, next: NextFunction) 
     let token;
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) { // Checks if the Authorization header is present and starts with 'Bearer' 
         token = req.headers.authorization.split(' ')[1]; // Extracts the token from the Authorization header
-        console.log("🔑 Token found:", token); // Logs the token for debugging purposes
+
         if (!JWT_SECRET) {
             console.error("❌ JWT_SECRET is missing!");
             return (res as any).status(500).json({ message: "Server config error" });

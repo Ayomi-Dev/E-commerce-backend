@@ -4,6 +4,7 @@ import express from 'express'; //
 import cors from 'cors'; // Importing necessary modules so that frontend can communicate with backend without any issues
 import mongoose from 'mongoose'; // Importing mongoose to connect to MongoDB
 import UserRoute from './routes/UserAuthRoute'; // Importing user routes for authentication
+import productRoutes from './routes/productRoutes'; // Importing product routes for product management
 
 const app = express()
 const PORT = process.env.PORT_NUMBER
@@ -31,3 +32,6 @@ app.get("/", (_, res) => {
   res.send("API is running");
 });
 app.use('/api/user', UserRoute); // Using user routes for authentication
+app.use('/api/products', productRoutes); // Using product routes for product management
+
+
