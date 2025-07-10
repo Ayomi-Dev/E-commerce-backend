@@ -24,7 +24,7 @@ export const registerNewUser = async (req: Request, res: Response) => {
             name,
             password: hashPassword,
             email
-        })
+        }) 
 
         await newUser.save() // Saves the new user to the database
         if (!JWT_SECRET) {

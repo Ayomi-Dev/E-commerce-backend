@@ -16,11 +16,11 @@ export const protect = (req: UserAuthRequest, res:Response, next: NextFunction) 
         if (!JWT_SECRET) {
             console.error("❌ JWT_SECRET is missing!");
             return (res as any).status(500).json({ message: "Server config error" });
-        }
+        } 
         
     }
     if(!token){
-        return (res as any).status(401).json({message: 'Unauthorized, no valid token'})
+        return res.status(401).json({message: 'Unauthorized, no valid token'})
     }
 
     try {

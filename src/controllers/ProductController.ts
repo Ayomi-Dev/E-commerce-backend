@@ -5,18 +5,20 @@ import { productQuery } from '../utils/productQuery';  // Importing utility func
 // Controller for handling product-related operations
 export const getProducts = async(req: Request, res: Response) => {  // Retrieves all products
     try {
-        const filters = productQuery(req.query);  // Get the query object from the utility function
-        const products = await Product.find(filters);  // Fetch products from the database using the query
+        const {query, sort} = productQuery(req.query);  // Get the query object from the utility function
+
+        const products = await Product.find(query)
+        .sort(sort);  // Fetch products from the database using the sort
         if (!products || products.length === 0) {
             return (res as any).status(404).json({ message: 'No products found' });
         }
-        res.status(200).json(products);
+        res.status(200).json(products); 
     } 
-    catch (error) {
+    catch (error) { 
         res.status(500).json({ message: 'Error fetching products', error });
     }
 }
-
+ 
 // Retrieve a single product by its ID
 export const getProductById = async (req: Request, res: Response) => {
     const { id } = req.params;  // Extract product ID from request parameters
@@ -32,7 +34,6 @@ export const getProductById = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error fetching product', error });
     }
 }
-
 
 
 // Create/add a new product 
