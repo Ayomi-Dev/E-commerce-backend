@@ -5,13 +5,15 @@ import { productQuery } from '../utils/productQuery';  // Importing utility func
 // Controller for handling product-related operations
 export const getProducts = async(req: Request, res: Response) => {  // Retrieves all products
     try {
-        const {query, sort} = productQuery(req.query);  // Get the query object from the utility function
+        const {query, sort, page, limit, skip} = productQuery(req.query);  // Get the query object from the utility function
 
         const products = await Product.find(query)
         .sort(sort);  // Fetch products from the database using the sort
+        
+
         if (!products || products.length === 0) {
             return (res as any).status(404).json({ message: 'No products found' });
-        }
+        } 
         res.status(200).json(products); 
     } 
     catch (error) { 

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { UserModel } from "../models/UserModel";
 
 const JWT_SECRET = process.env.JWT_SECRET as string; // Fetching the JWT secret from environment variables
 
@@ -8,8 +9,9 @@ interface UserAuthRequest extends Request {
 }
         
 // Middleware to authenticate user requests
-export const protect = (req: UserAuthRequest, res:Response, next: NextFunction) => {
+export const protect = async (req: UserAuthRequest, res:Response, next: NextFunction) => {
     let token;
+    try {
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) { // Checks if the Authorization header is present and starts with 'Bearer' 
         token = req.headers.authorization.split(' ')[1]; // Extracts the token from the Authorization header
 
@@ -18,16 +20,24 @@ export const protect = (req: UserAuthRequest, res:Response, next: NextFunction) 
             return (res as any).status(500).json({ message: "Server config error" });
         } 
         
-    }
-    if(!token){
-        return res.status(401).json({message: 'Unauthorized, no valid token'})
-    }
+    
+        if(!token){
+            return res.status(401).json({message: 'Unauthorized, no valid token'})
+        }
 
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { id: string }; // Verifies the token using the JWT secret
-        req.user = decoded.id; // Attaches the decoded user information to the request object
+        const decoded: any = jwt.verify(token, JWT_SECRET) as { id: string }; // Verifies the token using the JWT secret
+        req.user = await UserModel.findById( decoded.id).select('-password'); // Attaches the decoded user information to the request object
+
+        if (!req.user) {
+            return res.status(401).json({ message: "User not found" });
+        }
         next(); // Calls the next middleware or route handler 
-
+    }
+    else {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized, no valid token provided" });
+    }
     } 
     catch (error) {
     console.error("❌ Token verification failed:", error);

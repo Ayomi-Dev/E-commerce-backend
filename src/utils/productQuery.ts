@@ -4,7 +4,9 @@ import  { IProduct } from "../models/ProductModel";
 interface FilterResults { //defines the type of results the query function should return
     query: FilterQuery<IProduct>;
     sort: { [key: string]: SortOrder }; //Based on users selection, this specifies the value of what to sort products by and the order by which they should be sorted
- 
+    page: number;
+    limit: number;
+    skip: number;
 }  
 
 // Function to query products based on various filters
@@ -12,6 +14,10 @@ export const productQuery =  (params: any) : FilterResults => {
     const { name, category, min, max, sortBy } = params; // Destructure parameters for filtering and sorting
     const query: FilterQuery<IProduct> = {}; // Initialize an empty query object
     const sort: { [key: string]: SortOrder } = {}; // Initialize an empty sort object. 
+    const page = parseInt(params.page) || 1;  //specifies the page number 
+    const limit = parseInt(params.limit) || 10; //specifies the number of product to return per page
+    const skip = (page - 1) * limit //tells MongoDB the number of items to skip before starting sort
+
     
 
     if (sortBy) { // Check if sortBy parameter is provided
@@ -35,5 +41,5 @@ export const productQuery =  (params: any) : FilterResults => {
         if (max) query.price.$lte = parseFloat(max);
     }
 
-    return {query, sort}; // Return the query and sort objects
+    return {query, sort, page, limit, skip}; // Return the query and sort objects
 }
