@@ -3,7 +3,7 @@ import  { IProduct } from "../models/ProductModel";
  
 interface FilterResults { //defines the type of results the query function should return
     query: FilterQuery<IProduct>;
-    sort: { [key: string]: SortOrder }; //Based on users selection, this specifies the value of what to sort products by and the order by which they should be sorted
+    sort: { [key: string]: SortOrder }; //Based on users selection, this specifies the value of what products should be sorted by and the order by which they should be sorted
     page: number;
     limit: number;
     skip: number;
@@ -28,7 +28,7 @@ export const productQuery =  (params: any) : FilterResults => {
     }
 
     if (name) { // Check if name term is provided
-        query.name = { $regex: name, $options: 'i' }; // Case-insensitive search
+        query.name = { $regex: name, $options: 'i' }; // Case-insensitive search of products by name
     }
 
     if (category) { // Check if category is provided

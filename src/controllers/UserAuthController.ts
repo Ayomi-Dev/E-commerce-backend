@@ -28,7 +28,7 @@ export const registerNewUser = async (req: Request, res: Response) => {
 
         await newUser.save() // Saves the new user to the database
         if (!JWT_SECRET) {
-            console.error("❌ JWT_SECRET is missing!");
+            console.error("JWT_SECRET is missing!");
             return res.status(500).json({ message: "Server config error" });
         }
 
@@ -56,7 +56,7 @@ export const loginUser = async (req:Request, res: Response) => {
         try {
             const user = await UserModel.findOne({ email }) // Finds the user by email
             if (!user) {
-                return (res as any).status(400).json({ message: "Invalid email or password" })
+                return (res as any).status(400).json({ message: "Invalid email" })
             }
 
             const validPassword = await bcrypt.compare(password, user.password) //compares the provided password with the hashed password in the database
@@ -65,8 +65,8 @@ export const loginUser = async (req:Request, res: Response) => {
             }
 
             //create jwt token to authenticate the user
-            const token = jwt.sign({id: user._id }, JWT_SECRET, {expiresIn: '30d'}) // Generates a JWT token for the user
-            res.status(201).json({
+            const token = jwt.sign({id: user._id }, JWT_SECRET, {expiresIn: '7d'}) // Generates a JWT token for the user
+            res.status(200).json({
                 user: {
                     id: user._id,
                     name: user.name,

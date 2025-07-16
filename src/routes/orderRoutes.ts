@@ -9,9 +9,7 @@ const router = Router();
 router.post('/create-payment-intent', protect, createPaymentIntent)
 router.post('/', protect, createOrder);
 router.get('/my-orders', protect, fetchUserOrders);
-router.get('/test', protect, (req, res) => {
-    res.json((req as any).user)
-})
+
 
 
 

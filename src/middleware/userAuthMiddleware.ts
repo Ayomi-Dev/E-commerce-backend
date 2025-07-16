@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET as string; // Fetching the JWT secret 
 
 interface UserAuthRequest extends Request {
     user?:any 
-}
+} 
         
 // Middleware to authenticate user requests
 export const protect = async (req: UserAuthRequest, res:Response, next: NextFunction) => {
@@ -16,7 +16,7 @@ export const protect = async (req: UserAuthRequest, res:Response, next: NextFunc
         token = req.headers.authorization.split(' ')[1]; // Extracts the token from the Authorization header
 
         if (!JWT_SECRET) {
-            console.error("❌ JWT_SECRET is missing!");
+            console.error("JWT_SECRET is missing!");
             return (res as any).status(500).json({ message: "Server config error" });
         } 
         
@@ -40,7 +40,7 @@ export const protect = async (req: UserAuthRequest, res:Response, next: NextFunc
     }
     } 
     catch (error) {
-    console.error("❌ Token verification failed:", error);
+    console.error("Token verification failed:", error);
     return (res as any).status(401).json({ message: "Unauthorized, invalid token" });
     }
 }
