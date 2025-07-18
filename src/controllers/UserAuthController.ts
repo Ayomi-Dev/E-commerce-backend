@@ -9,10 +9,28 @@ const JWT_SECRET = process.env.JWT_SECRET as string; // Fetching the JWT secret 
 // This function handles user registration by checking if the user already exists, hashing the password, and saving the new user to the database. It also generates a JWT token for the user upon successful registration.
 // It responds with the user's details and the token if successful, or an error message if there are any issues during the process.
 export const registerNewUser = async (req: Request, res: Response) => {
-    const {email, password, name } = req.body
+    const { email, password, name } = req.body
+
+    if ( password.length < 8 ||  //checks conditions to validate password received from the request
+        !/[a-z]/.test(password) ||
+        !/[A-Z]/.test(password) ||
+        !/\d/.test(password) ||
+        !/[!@#$%^&.*]/.test(password)
+    ) {
+        return res.status(400).json({
+            message: "Password must include uppercase, lowercase, number, special character, and be at least 8 characters."
+        });
+    }
+
+    if (password !== req.body.confirmPassword) { //checks if password received from the request matches the one confirmed
+        return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+
+
 
     try{ 
-        const userExists = await UserModel.findOne({ email})
+        const userExists = await UserModel.findOne({ email })
 
         if(userExists) { //checks if a user with the given email already exists
             return (res as any).status(400).json({message: "User already exists"})
@@ -21,18 +39,19 @@ export const registerNewUser = async (req: Request, res: Response) => {
         const hashPassword = await bcrypt.hash(password, 10) // Hashing the password specifying the salt rounds
 
         const newUser = new UserModel({  //creates a new user object with the provided details
+            email,
             name,
             password: hashPassword,
-            email
         }) 
-
+        
         await newUser.save() // Saves the new user to the database
+        console.log(newUser)
         if (!JWT_SECRET) {
             console.error("JWT_SECRET is missing!");
             return res.status(500).json({ message: "Server config error" });
         }
 
-        const token = jwt.sign({id: newUser._id}, JWT_SECRET, { expiresIn: '30d' }) // Generates a JWT token for the user
+        const token = jwt.sign({id: newUser._id, isAdmin: newUser.isAdmin}, JWT_SECRET, { expiresIn: '7d' }) // Generates a JWT token for the user
         res.status(201).json({
             user:{
             _id: newUser._id,
@@ -51,7 +70,7 @@ export const registerNewUser = async (req: Request, res: Response) => {
 
     // Login functionality
 export const loginUser = async (req:Request, res: Response) => {
-        const {email, password } = req.body
+    const {email, password } = req.body
 
         try {
             const user = await UserModel.findOne({ email }) // Finds the user by email

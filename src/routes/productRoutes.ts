@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { protect } from "../middleware/userAuthMiddleware";
 import { getProducts, getProductById, addNewProduct, updateProduct, deleteProduct } from "../controllers/ProductController";
+import { requireAdmin } from "../middleware/adminAuth";
 
 const router = Router();
 
 router.get("/", getProducts);
 router.get("/:id", getProductById);
-router.post("/", protect, addNewProduct);
+router.post("/admin/create", protect, requireAdmin, addNewProduct);
 router.put("/:id", protect, updateProduct);
 router.delete("/:id", protect, deleteProduct);
 
