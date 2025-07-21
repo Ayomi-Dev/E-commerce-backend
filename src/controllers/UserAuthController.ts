@@ -74,6 +74,7 @@ export const loginUser = async (req:Request, res: Response) => {
 
         try {
             const user = await UserModel.findOne({ email }) // Finds the user by email
+            
             if (!user) {
                 return (res as any).status(400).json({ message: "Invalid email" })
             }
@@ -90,6 +91,7 @@ export const loginUser = async (req:Request, res: Response) => {
                     id: user._id,
                     name: user.name,
                     email: user.email,
+                    isAdmin: user.isAdmin
                 },
                 token
             })

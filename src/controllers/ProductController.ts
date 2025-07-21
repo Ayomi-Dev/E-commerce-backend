@@ -42,18 +42,18 @@ export const getProductById = async (req: Request, res: Response) => {
 export const addNewProduct = async (req: Request, res: Response) => {
 
     try {
-        const {name, description, price, imageUrl, category, reviews, stock} = req.body;  // Extract product details from request body
+        const {name, description, price, category, stock, images} = req.body;  // Extract product details from request body
         const newProduct = new Product({
             name,
             description,
             price,
-            imageUrl,
             category,
-            reviews,
-            stock
+            stock,
+            images
         });
-        
+         
         const saveNewProduct = await newProduct.save();  // Save the new product to the database
+        console.log(saveNewProduct)
         res.status(201).json({ product: saveNewProduct, message: 'Product added successfully' });  // Respond with the created product and a success message
 
     } catch (error) {

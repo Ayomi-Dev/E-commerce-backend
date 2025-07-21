@@ -6,6 +6,7 @@ import mongoose from 'mongoose'; // Importing mongoose to connect to MongoDB
 import UserRoute from './routes/UserAuthRoute'; // Importing user routes for authentication
 import productRoutes from './routes/productRoutes'; // Importing product routes for product management
 import orderRoutes from './routes/orderRoutes'
+import path from 'path'
 
 const app = express()
 const PORT = process.env.PORT_NUMBER
@@ -26,6 +27,7 @@ mongoose.connect(process.env.MONGO_URI as string,) //connecting to MongoDB using
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // Parse JSON bodies for incoming requests
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies for incoming requests i.e form submissions
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'))) //serves static files
 
 
 //importing routes

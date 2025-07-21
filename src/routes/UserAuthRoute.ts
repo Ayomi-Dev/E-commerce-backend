@@ -26,6 +26,7 @@ router.get('/profile', protect, async (req, res) => {
             id: user._id, 
             name: user.name,
             email: user.email,
+            isAdmin: user.isAdmin
         });
     }
     catch (error) {
@@ -33,5 +34,6 @@ router.get('/profile', protect, async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+
 
 export default router; // This router handles user authentication routes, including registration and login
