@@ -1,12 +1,17 @@
-import mongoose, {Schema, model} from 'mongoose';
+import mongoose, {Schema, model, Document} from 'mongoose';
 
-export interface IProduct {
+export interface Review{
+    review: string;
+    date: string
+}
+
+export interface IProduct extends Document {
     name: string;
     description: string;
     price: number;
     category: string;
     images?: string[]; // field for product image urls path
-    reviews?: string[]; // Optional field for reviews
+    reviews?: Review[]; // Optional field for reviews
     stock: number;
     brand?: string;
     rating?: number;
@@ -37,7 +42,16 @@ const ProductSchema = new Schema<IProduct>({
     price: { type: Number, required: true },
     category: { type: String, enum: categories, required: true },
     images: { type: [String], required: true }, // Optional field for product image URL
-    reviews: { type: [String], default: [] }, // Optional field for reviews, default to an empty array
+    reviews: {
+        type: [
+            {
+              userName: {type: String, required: true},
+              review: { type: String, required: true },
+              date: { type: Date, default: Date.now }
+            }
+        ],
+        default: []
+    }, // Optional field for reviews, default to an empty array
     stock: { type: Number, required: true },
     brand: {type: String },
     rating: {type: Number, default: 0},

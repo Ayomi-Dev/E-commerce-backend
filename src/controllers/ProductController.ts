@@ -65,14 +65,23 @@ export const addNewProduct = async (req: Request, res: Response) => {
 
 // Update an existing product by its ID
 export const updateProduct = async (req: Request, res: Response) => {
+    
     try{
         // Update the product details
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });  // Update the product in the database and return the updated product
+        const { review } = req.body
+  
+        const id = req.params.id
+
+        const updatedProduct = await Product.findById(id);  // find the product in the database by its id and return the updated product
         if(!updatedProduct){
             res.status(404).json({ message: 'Product not found' });
             return;
         }
-        res.status(200).json(updatedProduct);
+        updatedProduct.reviews?.push(review) //pushes the incoming review into the product's review array
+        updatedProduct.numReviews = updatedProduct.reviews?.length; //sets the number of reviews to the legth of the reviews array
+    
+        await updatedProduct.save() //saves the updated version into the database
+        res.status(200).json({updatedProduct});  //returns the updated version of the product to frontend
     } 
     catch (error) {
         console.log(error);
