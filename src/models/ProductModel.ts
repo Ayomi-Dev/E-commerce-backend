@@ -47,7 +47,7 @@ const ProductSchema = new Schema<IProduct>({
             {
               userName: {type: String, required: true},
               review: { type: String, required: true },
-              date: { type: Date, default: Date.now }
+              date: { type: String }
             }
         ],
         default: []
