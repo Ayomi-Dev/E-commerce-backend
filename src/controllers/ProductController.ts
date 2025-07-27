@@ -10,7 +10,7 @@ export const getProducts = async(req: Request, res: Response) => {  // Retrieves
         const products = await Product.find(query)
         .sort(sort);  // Fetch products from the database using the sort
         
-
+ 
         if (!products || products.length === 0) {
             return (res as any).status(404).json({ message: 'No products found' });
         } 
@@ -24,6 +24,7 @@ export const getProducts = async(req: Request, res: Response) => {  // Retrieves
 // Retrieve a single product by its ID
 export const getProductById = async (req: Request, res: Response) => {
     const { id } = req.params;  // Extract product ID from request parameters
+
     try{
         const product = await Product.findById(id);  // Finds the selected product by ID
         if (!product) {
@@ -53,7 +54,7 @@ export const addNewProduct = async (req: Request, res: Response) => {
         });
          
         const saveNewProduct = await newProduct.save();  // Save the new product to the database
-        console.log(saveNewProduct)
+        
         res.status(201).json({ product: saveNewProduct, message: 'Product added successfully' });  // Respond with the created product and a success message
 
     } catch (error) {
@@ -92,6 +93,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 
 // Deleting a product by its ID
 export const deleteProduct = async (req: Request, res: Response) => {
+  
     const { id } = req.params;  // Extract product ID from request parameters
     try{
         const productToDelete = await Product.findByIdAndDelete(id);  // Find and delete the product by ID 

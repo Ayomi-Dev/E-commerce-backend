@@ -15,7 +15,7 @@ router.post("/admin/create", protect, requireAdmin, addNewProduct);
 
 router.put("/:id/review", protect, updateProduct);
 
-router.delete("/:id", protect, deleteProduct);
+router.delete("/:id", protect, requireAdmin, deleteProduct);
 
 router.post('/upload/images', upload.array('images', 5), (req, res) => { //allows image files be created or saved locally on the backend
     const files = req.files as Express.Multer.File[]

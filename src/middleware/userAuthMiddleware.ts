@@ -4,10 +4,13 @@ import { UserModel } from "../models/UserModel";
 
 const JWT_SECRET = process.env.JWT_SECRET as string; // Fetching the JWT secret from environment variables
 
+interface UserPayload {
+    id: string;
+    isAdmin: boolean
+}
 interface UserAuthRequest extends Request {
-    user?:any 
-} 
-        
+    user?:UserPayload
+}      
 // Middleware to authenticate user requests
 export const protect = async (req: UserAuthRequest, res:Response, next: NextFunction) => {
     let token;
@@ -25,8 +28,8 @@ export const protect = async (req: UserAuthRequest, res:Response, next: NextFunc
             return res.status(401).json({message: 'Unauthorized, no valid token'})
         }
 
-        const decoded: any = jwt.verify(token, JWT_SECRET) as { id: string }; // Verifies the token using the JWT secret
-        req.user = await UserModel.findById( decoded.id).select('-password'); // Attaches the decoded user information to the request object
+        const decoded = jwt.verify(token, JWT_SECRET) as UserPayload; // Verifies the token using the JWT secret
+        (req as any).user = await UserModel.findById( decoded.id).select('-password'); // Attaches the decoded user information to the request object
 
         if (!req.user) {
             return res.status(401).json({ message: "User not found" });

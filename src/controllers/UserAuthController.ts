@@ -51,7 +51,7 @@ export const registerNewUser = async (req: Request, res: Response) => {
             return res.status(500).json({ message: "Server config error" });
         }
 
-        const token = jwt.sign({id: newUser._id, isAdmin: newUser.isAdmin}, JWT_SECRET, { expiresIn: '7d' }) // Generates a JWT token for the user
+        const token = jwt.sign({id: newUser._id}, JWT_SECRET, { expiresIn: '7d' }) // Generates a JWT token for the user
         res.status(201).json({
             user:{
             _id: newUser._id,
@@ -85,7 +85,7 @@ export const loginUser = async (req:Request, res: Response) => {
             }
 
             //create jwt token to authenticate the user
-            const token = jwt.sign({id: user._id }, JWT_SECRET, {expiresIn: '7d'}) // Generates a JWT token for the user
+            const token = jwt.sign({id: user._id, isAdmin: user.isAdmin }, JWT_SECRET, {expiresIn: '7d'}) // Generates a JWT token for the user
             res.status(200).json({
                 user: {
                     id: user._id,
