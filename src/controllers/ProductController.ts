@@ -43,7 +43,7 @@ export const getProductById = async (req: Request, res: Response) => {
 export const addNewProduct = async (req: Request, res: Response) => {
 
     try {
-        const {name, description, price, category, stock, images} = req.body;  // Extract product details from request body
+        const {name, description, price, brand, category, stock, images} = req.body;  // Extract product details from request body
         const newProduct = new Product({
             name,
             description,
@@ -63,9 +63,36 @@ export const addNewProduct = async (req: Request, res: Response) => {
     }
 }
 
+export const updateProductDetails = async (req:Request, res:Response) => {
+    const {name, description, price, category, brand, stock, images} = req.body
+    const {id} = req.params
+
+    try{
+        const updatedProduct = await Product.findByIdAndUpdate(id, {
+            name,
+            description,
+            price,
+            category,
+            brand,
+            stock,
+            images
+        }, 
+        {new: true}
+        )
+
+        if (!updatedProduct) {
+            return (res as any).status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ product: updatedProduct, message: 'Product updated successfully' });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error updating product', error });
+    }
+}
 
 // Update an existing product by its ID
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateReview = async (req: Request, res: Response) => {
     
     try{
         // Update the product details

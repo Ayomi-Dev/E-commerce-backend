@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { protect } from "../middleware/userAuthMiddleware";
-import { getProducts, getProductById, addNewProduct, updateProduct, deleteProduct } from "../controllers/ProductController";
+import { getProducts, getProductById, addNewProduct, deleteProduct, updateReview, updateProductDetails } from "../controllers/ProductController";
 import { requireAdmin } from "../middleware/adminAuth";
 import { upload } from "../utils/UploadFile";
 
@@ -13,7 +13,9 @@ router.get("/:id", getProductById);
 
 router.post("/admin/create", protect, requireAdmin, addNewProduct);
 
-router.put("/:id/review", protect, updateProduct);
+router.put("/:id/review", protect, updateReview);
+
+router.put("/admin/edit/:id", protect, updateProductDetails);
 
 router.delete("/:id", protect, requireAdmin, deleteProduct);
 
