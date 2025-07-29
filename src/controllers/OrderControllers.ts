@@ -10,11 +10,11 @@ const stripe = new Stripe(stripeSecretKey, {
     apiVersion: "2025-06-30.basil"
 })
 export const createPaymentIntent = async (req:Request, res:Response) => {
-    const { amount } = req.body
+    const { totalAmount } = req.body
 
     try {
         const paymentIntent = await stripe.paymentIntents.create({
-            amount,
+            amount: totalAmount,
             currency: "usd",
             payment_method_types: ['card']
         });

@@ -11,13 +11,13 @@ interface FilterResults { //defines the type of results the query function shoul
 
 // Function to query products based on various filters
 export const productQuery =  (params: any) : FilterResults => {
-    const { name, category, min, max, sortBy } = params; // Destructure parameters for filtering and sorting
+    const { name, category, min, max, sortBy, rating } = params; // Destructure parameters for filtering and sorting
     const query: FilterQuery<IProduct> = {}; // Initialize an empty query object
     const sort: { [key: string]: SortOrder } = {}; // Initialize an empty sort object. 
     const page = parseInt(params.page) || 1;  //specifies the page number 
     const limit = parseInt(params.limit) || 10; //specifies the number of product to return per page
     const skip = (page - 1) * limit //tells MongoDB the number of items to skip before starting sort
-
+ 
     
 
     if (sortBy) { // Check if sortBy parameter is provided
@@ -40,6 +40,11 @@ export const productQuery =  (params: any) : FilterResults => {
         if (min) query.price.$gte = parseFloat(min);
         if (max) query.price.$lte = parseFloat(max);
     }
+    if (rating) {
+        query.rating = { $gte: parseFloat(params.rating) 
+    
+    };
+}
 
     return {query, sort, page, limit, skip}; // Return the query and sort objects
 }
