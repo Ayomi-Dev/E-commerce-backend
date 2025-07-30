@@ -12,6 +12,7 @@ export interface IOrder extends Document {
     user: Schema.Types.ObjectId;
     orderItems: OrderItem[];
     totalAmount: number;
+    totalQuantity: number;
     isPaid: boolean;
     paidAt?: Date;
     paymentIntentId: string
@@ -32,6 +33,7 @@ const orderSchema = new Schema({
         }
     ],
     totalAmount: {type: Number, required: true},
+    totalQuantity: {type: Number, required: true},
     isPaid: {type: Boolean, default: false},
     paidAt: Date,
     paymentIntentId: String,

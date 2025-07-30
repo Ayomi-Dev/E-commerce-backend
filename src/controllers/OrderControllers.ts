@@ -14,6 +14,7 @@ export const createPaymentIntent = async (req:Request, res:Response) => {
 
     try {
         const paymentIntent = await stripe.paymentIntents.create({
+            
             amount: totalAmount,
             currency: "usd",
             payment_method_types: ['card']
@@ -31,8 +32,8 @@ export const createPaymentIntent = async (req:Request, res:Response) => {
 
 
 export const createOrder = async (req:Request, res:Response) => {
-    const {orderItems, totalAmount, paymentIntentId} = req.body;
-
+    const {orderItems, totalAmount, totalQuantity, paymentIntentId} = req.body;
+    
     if(!orderItems || orderItems.length === 0){
         return (res as any).status(400).json({message: "No order items found"})
     }
@@ -41,6 +42,7 @@ export const createOrder = async (req:Request, res:Response) => {
         user: (req as any).user._id,
         orderItems,
         totalAmount,
+        totalQuantity,
         isPaid: true,
         paidAt: new Date(),
         paymentIntentId
@@ -55,3 +57,12 @@ export const fetchUserOrders = async (req: Request, res: Response) => {
     const order = await Order.find({user: (req as any).user.id});
     res.status(200).json(order)
 };
+
+export const deleteOrder = async(req: Request, res: Response) => {
+    const {id } = req.params
+    const order = await Order.findByIdAndDelete(id);
+    if(!order){
+        return (res as any).status(404).json({message: "Order not found"})
+    }
+    res.status(200).json({message: "Order successfully deleted"})
+}
