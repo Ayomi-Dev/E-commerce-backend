@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET as string; // Fetching the JWT secret 
 // This function handles user registration by checking if the user already exists, hashing the password, and saving the new user to the database. It also generates a JWT token for the user upon successful registration.
 // It responds with the user's details and the token if successful, or an error message if there are any issues during the process.
 export const registerNewUser = async (req: Request, res: Response) => {
-    const { email, password, name } = req.body
+    const { email, password, confirmPassword, name } = req.body
 
     if ( password.length < 8 ||  //checks conditions to validate password received from the request
         !/[a-z]/.test(password) ||
@@ -22,12 +22,9 @@ export const registerNewUser = async (req: Request, res: Response) => {
         });
     }
 
-    if (password !== req.body.confirmPassword) { //checks if password received from the request matches the one confirmed
+    if (password !== confirmPassword) { //checks if password received from the request matches the one confirmed
         return res.status(400).json({ message: "Passwords do not match" });
     }
-
-
-
 
     try{ 
         const userExists = await UserModel.findOne({ email })
@@ -45,7 +42,7 @@ export const registerNewUser = async (req: Request, res: Response) => {
         }) 
         
         await newUser.save() // Saves the new user to the database
-        console.log(newUser)
+        
         if (!JWT_SECRET) {
             console.error("JWT_SECRET is missing!");
             return res.status(500).json({ message: "Server config error" });
