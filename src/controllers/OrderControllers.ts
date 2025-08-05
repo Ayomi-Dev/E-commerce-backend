@@ -47,6 +47,7 @@ export const createOrder = async (req:Request, res:Response) => {
         paidAt: new Date(),
         paymentIntentId
     });
+    
     const createdOrder = await newOrder.save();
 
     res.status(200).json(createdOrder)

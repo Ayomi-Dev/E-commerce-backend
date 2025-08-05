@@ -98,3 +98,29 @@ export const loginUser = async (req:Request, res: Response) => {
             return res.status(500).json({ message: "Internal server error" }) // Handles any errors that occur during the process
         }
     }
+
+export const getUsers = async (req: Request, res:Response) => {
+    try{
+        const users = await UserModel.find({}).select("-password") // Fetches all users from the database excluding their passwords
+        res.status(200).json(users)
+    }
+    catch(error){
+        console.error(error)
+        res.status(500).json({message: "Inter server error"})
+    }
+}
+
+export const deleteUser = async (req:Request, res:Response) => {
+    const { id } = req.params
+    try{
+        const user = await UserModel.findByIdAndDelete(id)
+        if(!user){
+            return (res as any).status(401).json({message:"User cannot be found"})
+        }
+        res.status(201).json({message: "Account Successfully deleted"})
+    }
+    catch(error){
+        console.log(error)
+        res.status(500).json({message: "Server error"})
+    }
+}

@@ -5,8 +5,9 @@ interface OrderItem {
     name: string;
     quantity: number;
     price: number;
+    image: string;
+    total: number;
 }
-
 
 export interface IOrder extends Document {
     user: Schema.Types.ObjectId;
@@ -29,7 +30,9 @@ const orderSchema = new Schema({
             product: { type: Schema.Types.ObjectId, ref:"Product", required: true},
             name: {type: String, required: true},
             quantity: { type: Number, required: true},
-            price: { type: Number, required: true}
+            price: { type: Number, required: true},
+            image: {type: String, required: true},
+            total: { type: Number, required: true}
         }
     ],
     totalAmount: {type: Number, required: true},

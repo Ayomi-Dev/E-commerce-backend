@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { protect } from "../middleware/userAuthMiddleware"; // Importing the authentication middleware
 
-import { registerNewUser, loginUser } from "../controllers/UserAuthController";
+import { registerNewUser, loginUser, deleteUser, getUsers } from "../controllers/UserAuthController";
 import { UserModel } from "../models/UserModel"; // Importing the User model for database operations
+import { requireAdmin } from "../middleware/adminAuth";
 
 const router = Router();
 
@@ -35,5 +36,8 @@ router.get('/profile', protect, async (req, res) => {
     }
 });
 
+router.get("/admin/all-users", protect, requireAdmin, getUsers )
+
+router.delete("/deactivate/:id", protect, requireAdmin, deleteUser)
 
 export default router; // This router handles user authentication routes, including registration and login
