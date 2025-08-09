@@ -5,6 +5,9 @@ export interface IUser extends Document { //this interface defines the structure
     email: string;
     password: string;
     isAdmin: boolean;
+    address: string;
+    phone: number;
+    image: string;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -12,7 +15,10 @@ const UserSchema = new Schema<IUser>(
         name: {type: String, required: true},
         email: {type: String, required: true, unique: true},
         password: {type: String, required: true},
-        isAdmin: {type: Boolean, default: false}
+        isAdmin: {type: Boolean, default: false},
+        address: {type: String,},
+        phone: {type: Number},
+        image: {type: String}
     }, 
     {
         timestamps: true //this will add createdAt and updatedAt fields to the document

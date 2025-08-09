@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { UserModel } from "../models/UserModel";
+import uploadToCloudinary from "../utils/cloudUpload";
 
 const JWT_SECRET = process.env.JWT_SECRET as string; // Fetching the JWT secret from environment variables
 
@@ -85,10 +86,13 @@ export const loginUser = async (req:Request, res: Response) => {
             const token = jwt.sign({id: user._id, isAdmin: user.isAdmin }, JWT_SECRET, {expiresIn: '7d'}) // Generates a JWT token for the user
             res.status(200).json({
                 user: {
-                    id: user._id,
+                    _id: user._id,
                     name: user.name,
                     email: user.email,
-                    isAdmin: user.isAdmin
+                    isAdmin: user.isAdmin,
+                    image: user.image,
+                    address: user.address,
+                    phone: user.phone
                 },
                 token
             })
@@ -122,5 +126,56 @@ export const deleteUser = async (req:Request, res:Response) => {
     catch(error){
         console.log(error)
         res.status(500).json({message: "Server error"})
+    }
+}
+
+
+export const editUserInfo = async(req:Request, res:Response) => {
+    
+    const { id } = req.params
+    try {
+        const { name, email, phone, address } = req.body;
+        let imageUrl = null;
+
+        // If an image was uploaded
+        if (req.file) {
+          const result = await uploadToCloudinary(req.file.buffer, 'profile_photos');
+          imageUrl = result.secure_url;
+        }
+
+        const updatedUser = {
+            name,
+            email,
+            phone,
+            address,
+            image: imageUrl
+        };
+        const updatedUserInfo = await UserModel.findByIdAndUpdate(id, updatedUser, {new: true});
+
+        if(!updatedUserInfo){
+            res.status(404).json({message: "User not found"})
+        }
+        
+        res.status(201).json({user: updatedUserInfo, message: "User Info updated successfully"})
+
+    } catch (error) {
+       console.log("edit user",error);
+        res.status(500).json({message: "Server error"})
+    }
+}
+
+export const getUserById = async(req:Request, res:Response) => {
+    const { id } = req.params
+    try {
+        const user = await UserModel.findById(id).select('-password');
+        if(!user){
+            res.status(401).json({message: "User not found"})
+        }
+        res.status(200).json(user)
+    } 
+    
+    catch (error) {
+       console.error(error);
+       res.status(500).json({message: "Server error", error});
     }
 }

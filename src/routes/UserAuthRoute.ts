@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { protect } from "../middleware/userAuthMiddleware"; // Importing the authentication middleware
 
-import { registerNewUser, loginUser, deleteUser, getUsers } from "../controllers/UserAuthController";
+import { registerNewUser, loginUser, deleteUser, getUsers, editUserInfo, getUserById } from "../controllers/UserAuthController";
 import { UserModel } from "../models/UserModel"; // Importing the User model for database operations
 import { requireAdmin } from "../middleware/adminAuth";
+import upload from "../utils/multer";
 
 const router = Router();
 
@@ -24,10 +25,13 @@ router.get('/profile', protect, async (req, res) => {
         res.status(200).json({
             message: `Welcome ${user.name}, you are logged in successfully`,
             // Accessing the user ID from the request object set by the protect middleware
-            id: user._id, 
+            _id: user._id, 
             name: user.name,
             email: user.email,
-            isAdmin: user.isAdmin
+            isAdmin: user.isAdmin,
+            image: user.image,
+            address: user.address,
+            phone: user.phone
         });
     }
     catch (error) {
@@ -35,6 +39,15 @@ router.get('/profile', protect, async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 });
+
+router.get('/profile/edit/:id', protect, getUserById);
+
+router.put('/profile/edit/:id', protect, upload.single("image"), editUserInfo);
+// router.put('/profile/edit/:id', protect, upload.single("image"), (req,res) => {
+//     console.log('upload passed')
+//     res.send('all good')
+// });
+
 
 router.get("/admin/all-users", protect, requireAdmin, getUsers )
 
