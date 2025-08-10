@@ -25,7 +25,7 @@ mongoose.connect(process.env.MONGO_URI as string,) //connecting to MongoDB using
 
 
 app.use(cors({
-  origin: ["http://localhost:5173", "https://codealpha-ecommerce-ftdlmr93m-ayomides-projects-2ab787ec.vercel.app"],
+  origin: ["http://localhost:5173", "https://codealpha-ecommerce-eight.vercel.app/"],
   methods: ["GET","POST","PUT","DELETE"], // both dev + prod
   credentials: true
 })); // Enable CORS for all routes 
