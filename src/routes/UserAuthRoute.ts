@@ -23,7 +23,7 @@ router.get('/profile', protect, async (req, res) => {
             return;
         }
         res.status(200).json({
-            message: `Welcome ${user.name}, you are logged in successfully`,
+            message: `Welcome, ${user.name}`,
             // Accessing the user ID from the request object set by the protect middleware
             _id: user._id, 
             name: user.name,

@@ -24,7 +24,10 @@ mongoose.connect(process.env.MONGO_URI as string,) //connecting to MongoDB using
 });
 
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+  origin: ["http://localhost:5173", "https://ecommerce-frontend-one-chi.vercel.app/"], // both dev + prod
+  credentials: true
+})); // Enable CORS for all routes 
 app.use(express.json()); // Parse JSON bodies for incoming requests
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies for incoming requests i.e form submissions
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'))) //serves static files
