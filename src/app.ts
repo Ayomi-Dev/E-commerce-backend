@@ -25,7 +25,8 @@ mongoose.connect(process.env.MONGO_URI as string,) //connecting to MongoDB using
 
 
 app.use(cors({
-  origin: ["http://localhost:5173", "https://ecommerce-frontend-one-chi.vercel.app/"], // both dev + prod
+  origin: ["http://localhost:5173", "https://codealpha-ecommerce-ftdlmr93m-ayomides-projects-2ab787ec.vercel.app"],
+  methods: ["GET","POST","PUT","DELETE"], // both dev + prod
   credentials: true
 })); // Enable CORS for all routes 
 app.use(express.json()); // Parse JSON bodies for incoming requests
