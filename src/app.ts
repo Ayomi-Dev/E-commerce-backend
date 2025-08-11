@@ -12,6 +12,7 @@ const app = express()
 const PORT = process.env.PORT_NUMBER
 
 
+
 mongoose.connect(process.env.MONGO_URI as string,) //connecting to MongoDB using the URI from the .env file
 .then(() => {
     console.log('Connected to MongoDB');
@@ -23,25 +24,22 @@ mongoose.connect(process.env.MONGO_URI as string,) //connecting to MongoDB using
     console.error('MongoDB connection error:', error);
 });
 
-const allowedOrigins = ['https://codealpha-ecommerce-ten.vercel.app'];
+const allowedOrigins = ["http://localhost:5173","http://127.0.0.1:5173",'https://codealpha-ecommerce-ten.vercel.app'];
 app.use(cors({
   origin: function(origin, callback){
     // allow requests with no origin like mobile apps or curl requests
-    if(!origin) return callback(null, true);
+    if(!origin || allowedOrigins.includes(origin)) return callback(null, true);
+
+
     if(allowedOrigins.indexOf(origin) === -1){
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
+    
     return callback(null, true);
   },
   credentials: true, // if you need cookies or auth headers
 }));
-
-// app.use(cors({
-//   origin: "https://codealpha-ecommerce-ten.vercel.app",
-//   methods: ["GET","POST","PUT","DELETE"], // both dev + prod
-//   credentials: true
-// })); // Enable CORS for all routes 
 app.use(express.json()); // Parse JSON bodies for incoming requests
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies for incoming requests i.e form submissions
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'))) //serves static files

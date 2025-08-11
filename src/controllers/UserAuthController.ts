@@ -68,13 +68,14 @@ export const registerNewUser = async (req: Request, res: Response) => {
 
     // Login functionality
 export const loginUser = async (req:Request, res: Response) => {
+    
     const {email, password } = req.body
 
         try {
             const user = await UserModel.findOne({ email }) // Finds the user by email
             
             if (!user) {
-                return (res as any).status(400).json({ message: "Invalid email" })
+                return (res as any).status(400).json({ message: "User not found" })
             }
 
             const validPassword = await bcrypt.compare(password, user.password) //compares the provided password with the hashed password in the database

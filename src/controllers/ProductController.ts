@@ -44,6 +44,9 @@ export const addNewProduct = async (req: Request, res: Response) => {
 
     try {
         const {name, description, price, brand, category, stock, images} = req.body;  // Extract product details from request body
+        if(!images || !Array.isArray(images) || images.length === 0){
+            res.status(400).json({message: "Upload at least an image URL is required"})
+        }
         const newProduct = new Product({
             name,
             description,
