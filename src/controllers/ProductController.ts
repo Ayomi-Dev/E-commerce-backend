@@ -96,7 +96,7 @@ export const updateProductDetails = async (req:Request, res:Response) => {
 
 // Update an existing product by its ID
 export const updateReview = async (req: Request, res: Response) => {
-    
+
     try{
         // Update the product details
         const { review } = req.body
